@@ -8,12 +8,13 @@ namespace WebMvcNorthWind.Models
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
         protected SqlConnection _cn;
+        private IConfiguration configuration;
 
 
         public BaseDal (IConfiguration configuration)
         {
-            _configuration = configuration;
-            _connectionString = _configuration.GetConnectionString("Base_DB_ConnectString");
+            this._configuration = configuration;
+            this._connectionString = _configuration.GetConnectionString("Base_DB_ConnectString");
             try
             {
                 if (_cn == null)
@@ -27,7 +28,7 @@ namespace WebMvcNorthWind.Models
             }
             catch (Exception ex)
             {
-
+                
             }
         }
 
@@ -42,7 +43,6 @@ namespace WebMvcNorthWind.Models
             }
             catch (Exception ex)
             {
-
             }
         }
     }

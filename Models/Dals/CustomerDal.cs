@@ -11,10 +11,12 @@ namespace WebMvcNorthWind.Models.Dals
     public class CustomerDal : BaseDal
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<CustomerDal> _Logger;
 
-        public CustomerDal(IConfiguration configuration) : base(configuration)
+        public CustomerDal(IConfiguration configuration, ILogger<CustomerDal> logger) : base(configuration)
         {
             this._configuration = configuration;
+            this._Logger = logger;
         }
 
         /// <summary>
@@ -24,6 +26,7 @@ namespace WebMvcNorthWind.Models.Dals
         /// <exception cref="Exception"></exception>
         public async Task<List<CustomerModel>> GetCustomer()
         {
+            _Logger.LogInformation("CustomerDal GetCustomer start");
             try
             {
                 StringBuilder sbSql = new StringBuilder();
@@ -35,6 +38,7 @@ namespace WebMvcNorthWind.Models.Dals
             }
             catch (Exception ex)
             {
+                _Logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
             finally
@@ -51,6 +55,7 @@ namespace WebMvcNorthWind.Models.Dals
         /// <exception cref="Exception"></exception>
         public async Task<CustomerModel> GetCustomerByID(string p_sId)
         {
+            _Logger.LogInformation("CustomerDal GetCustomerByID start");
             StringBuilder sbSql = new StringBuilder();
             DynamicParameters p = new DynamicParameters();
             try
@@ -64,6 +69,7 @@ namespace WebMvcNorthWind.Models.Dals
             }
             catch (Exception ex)
             {
+                _Logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
             finally
@@ -81,6 +87,7 @@ namespace WebMvcNorthWind.Models.Dals
         /// <exception cref="Exception"></exception>
         public async Task<int> AddCustomer(CustomerModel p_oAdd)
         {
+            _Logger.LogInformation("CcustomerDal AddCustomer start");
             StringBuilder sbSql = new StringBuilder();
             DynamicParameters p = new DynamicParameters();
             try
@@ -109,6 +116,7 @@ namespace WebMvcNorthWind.Models.Dals
             }
             catch (Exception ex)
             {
+                _Logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
             finally
@@ -126,6 +134,7 @@ namespace WebMvcNorthWind.Models.Dals
         /// <exception cref="Exception"></exception>
         public async Task<int> UpdateCustomer(CustomerModel p_oUpd)
         {
+            _Logger.LogInformation("CustomerDal UpdateCustomer start");
             StringBuilder sbSql = new StringBuilder();
             DynamicParameters p = new DynamicParameters();
             try
@@ -154,6 +163,7 @@ namespace WebMvcNorthWind.Models.Dals
             }
             catch (Exception ex)
             {
+                _Logger.LogError(ex.ToString());
                 throw new Exception(ex.Message);
             }
             finally
@@ -170,6 +180,7 @@ namespace WebMvcNorthWind.Models.Dals
         /// <exception cref="Exception"></exception>
         public async Task<int> DeleteCustomer(string p_sCustomerID)
         {
+            _Logger.LogInformation("CustomerDal DeleteCustomer start");
             StringBuilder sbSql = new StringBuilder();
             DynamicParameters p = new DynamicParameters();
             try
@@ -182,7 +193,8 @@ namespace WebMvcNorthWind.Models.Dals
                 return rowsAffected; 
             }
             catch (Exception ex)
-            {                     
+            {             
+                _Logger.LogError (ex.ToString());
                 throw new Exception(ex.Message);                
             }
             finally

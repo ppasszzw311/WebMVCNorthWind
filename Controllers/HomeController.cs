@@ -18,6 +18,12 @@ namespace WebMvcNorthWind.Controllers
             return View();
         }
 
+        // 新增新刪修頁面
+        public IActionResult Customer()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

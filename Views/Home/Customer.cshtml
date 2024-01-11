@@ -1,0 +1,190 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h3 class="display-4">顧客的新增、修改、刪除</h3>
+    <div>
+        <!-- 控制項按鈕 -->
+        <button type="button" class="btn btn-primary" id="add-data" data-bs-toggle="modal" data-bs-target="#addModal">
+            新增
+        </button>
+        <button class="btn btn-secondary" id="get-data">更新資料</button>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Handle</th>
+            </tr>
+        </thead>
+        <tbody id="custom-data-body">
+            
+        </tbody>
+    </table>
+</div>
+
+<!-- add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">新增顧客</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <span class="input-group-text">First and last name</span>
+                    <input type="text" aria-label="First name" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- inform Modal -->
+<div class="modal fade" id="informModal" tabindex="-1" aria-labelledby="informModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">顧客詳細</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">修改顧客</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">刪除顧客</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // 在這裡編寫你的 jQuery 代碼
+            $("#get-data").click(function () {
+                getData();
+            });
+            $("#add-data").click(addData);
+            $("#custom-data-body").click(function (e) {
+                const classList = e.target.classList;
+                console.log(classList.contains("information"));
+                console.log(classList.contains("edit"));
+                console.log(classList.contains("delete"));
+                console.log(e.target.dataset.id);
+            })
+
+        });
+
+        // 取得所有資料
+        function getData() {
+            $.ajax({
+                url: "/api/customer",
+                method: "GET",
+                dataType: "json",
+                success: function (res) {
+                    RenderTable(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+
+        // 取得單筆資料詳細
+
+        // 新增資料
+
+        // 修改資料
+
+        // 畫表格
+        function RenderTable(data) {
+            let tableBodyItem = ``
+            if (data.length > 0) {
+                for (let i = 0; i < data.length; i++) {
+                    const id = i + 1;
+                    const item = data[i];
+                    tableBodyItem += `
+                            <tr>
+                                    <td>
+                                      <button type="button" class="btn btn-info information" data-bs-toggle="modal" data-bs-target="#informModal"  data-id=${item.customerID}>
+                                        詳細
+                                      </button>
+                                              <button type="button" class="btn btn-success edit" data-bs-toggle="modal" data-bs-target="#editModal"  data-id=${item.customerID}>
+                                                修改
+                                      </button>
+                                              <button type="button" class="btn btn-danger delete" data-bs-toggle="modal" data-bs-target="#deleteModal"  data-id=${item.customerID}>
+                                                刪除
+                                      </button>
+                                    </td>
+                                <th scope="row">${id}</th>
+                                <td>${item.customerID}</td>
+                                <td>${item.companyName}</td>
+                                <td>${item.contactName}</td>
+                                
+                            </tr>`
+                }
+                $("#custom-data-body").html(tableBodyItem);
+            } else {
+                $("#custom-data-body").html("沒有內容");
+            }
+        }
+
+        // 建立新的資料
+        function addData() {
+            
+        }
+
+        function handleClick() {
+            alert("information")
+        }
+    </script>
+}
