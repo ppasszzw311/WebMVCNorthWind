@@ -1,7 +1,12 @@
+using WebMvcNorthWind.Models;
+using WebMvcNorthWind.Models.Dals;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<BaseDal>();
+builder.Services.AddScoped<CustomerDal>();
 
 var app = builder.Build();
 
