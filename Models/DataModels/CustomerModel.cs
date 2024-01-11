@@ -9,7 +9,7 @@ namespace WebMvcNorthWind.Models
         [Required]
         public string CompanyName { get; set; }
         public string? ContactName { get; set; } = null;
-        public string? ContractTitle { get; set; } = null;
+        public string? ContactTitle { get; set; } = null;
         public string? Address { get; set; } = null;
         public string? City { get; set; } = null;
         public string? Region { get; set; } = null;

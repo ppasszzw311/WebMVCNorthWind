@@ -37,6 +37,10 @@ namespace WebMvcNorthWind.Models.Dals
             {
                 throw new Exception(ex.Message);
             }
+            finally
+            {
+                AllDispose();
+            }
         }
 
         /// <summary>
@@ -54,9 +58,9 @@ namespace WebMvcNorthWind.Models.Dals
                 sbSql.Append("SELECT * FROM Customers WHERE CustomerID = @CustomerID;");
                 p.Add("@CustomerID", p_sId);
 
-                var oCustomer = await base._cn.QueryAsync<CustomerModel>(sbSql.ToString(), p);
+                var oCustomer = await base._cn.QueryFirstOrDefaultAsync<CustomerModel>(sbSql.ToString(), p);
 
-                return (CustomerModel)oCustomer;
+                return oCustomer;
             }
             catch (Exception ex)
             {
@@ -75,7 +79,7 @@ namespace WebMvcNorthWind.Models.Dals
         /// <param name="p_oAdd"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<int> InsertCustomer(CustomerModel p_oAdd)
+        public async Task<int> AddCustomer(CustomerModel p_oAdd)
         {
             StringBuilder sbSql = new StringBuilder();
             DynamicParameters p = new DynamicParameters();
@@ -92,7 +96,7 @@ namespace WebMvcNorthWind.Models.Dals
                 p.Add("@CustomerID", p_oAdd.CustomerID);
                 p.Add("@CompanyName", p_oAdd.CompanyName);
                 p.Add("@ContactName", p_oAdd.ContactName);
-                p.Add("@ContactTitle", p_oAdd.ContractTitle);
+                p.Add("@ContactTitle", p_oAdd.ContactTitle);
                 p.Add("@Address", p_oAdd.Address);
                 p.Add("@City", p_oAdd.City);
                 p.Add("@Region", p_oAdd.Region);
@@ -106,6 +110,10 @@ namespace WebMvcNorthWind.Models.Dals
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+            finally
+            {
+                AllDispose();
             }
         }
 
@@ -125,13 +133,13 @@ namespace WebMvcNorthWind.Models.Dals
                 sbSql.Append(@"UPDATE Customers 
                                SET CompanyName = @CompanyName, ContactName = @ContactName, ContactTitle = @ContactTitle,
                                    Address = @Address, City = @City, Region = @Region, PostalCode = @PostalCode,
-                                    Country = @Country, Phone = @Phone, Fax = @Fax
-                               WHERE CustomerID = @CustomerID,");
+                                   Country = @Country, Phone = @Phone, Fax = @Fax
+                               WHERE CustomerID = @CustomerID;");
 
                 p.Add("@CustomerID", p_oUpd.CustomerID);
                 p.Add("@CompanyName", p_oUpd.CompanyName);
-                p.Add("@ContactName", p_oUpd.ContactName);
-                p.Add("@ContactTitle", p_oUpd.ContractTitle);
+                p.Add("@contactName", p_oUpd.ContactName);
+                p.Add("@ContactTitle", p_oUpd.ContactTitle);
                 p.Add("@Address", p_oUpd.Address);
                 p.Add("@City", p_oUpd.City);
                 p.Add("@Region", p_oUpd.Region);
@@ -147,6 +155,10 @@ namespace WebMvcNorthWind.Models.Dals
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+            finally
+            {
+                AllDispose();
             }
         }
 
@@ -172,6 +184,10 @@ namespace WebMvcNorthWind.Models.Dals
             catch (Exception ex)
             {                     
                 throw new Exception(ex.Message);                
+            }
+            finally
+            {
+                AllDispose();
             }
         }
 
