@@ -39,47 +39,47 @@
             <div class="modal-body">
                 <div class="input-group mt-1">
                     <span class="input-group-text">CustomerID</span>
-                    <input type="text" aria-label="CustomerID" class="form-control">
+                    <input type="text" aria-label="CustomerID" data-id="CustomerID" class="form-control">
                 </div>
                 <div class="input-group mt-1">
                     <span class="input-group-text">Company Name</span>
-                    <input type="text" aria-label="Company Name" class="form-control">
+                    <input type="text" aria-label="Company Name" data-id="Company Name" class="form-control">
                 </div>
                 <div class="input-group mt-1">
                     <span class="input-group-text">Contact Name</span>
-                    <input type="text" aria-label="Contact Name" class="form-control">
+                    <input type="text" aria-label="Contact Name" data-id="Contact Name" class="form-control">
                 </div>
                 <div class="input-group mt-1">
                     <span class="input-group-text">Contact Title</span>
-                    <input type="text" aria-label="Contact Title" class="form-control">
+                    <input type="text" aria-label="Contact Title" data-id="Contact Title" class="form-control">
                 </div>
                 <div class="input-group mt-1">
                     <span class="input-group-text">Address</span>
-                    <input type="text" aria-label="Address" class="form-control">
+                    <input type="text" aria-label="Address" data-id="Address" class="form-control">
                 </div>
                 <div class="input-group mt-1">
                     <span class="input-group-text">City</span>
-                    <input type="text" aria-label="City" class="form-control">
+                    <input type="text" aria-label="City" data-id="City" class="form-control">
                 </div>
                 <div class="input-group mt-1">
                     <span class="input-group-text">Region</span>
-                    <input type="text" aria-label="Region" class="form-control">
+                    <input type="text" aria-label="Region" data-id="Region" class="form-control">
                 </div>
                 <div class="input-group mt-1">
                     <span class="input-group-text">Postal Code</span>
-                    <input type="text" aria-label="Postal Code" class="form-control">
+                    <input type="text" aria-label="Postal Code" data-id="Postal Code" class="form-control">
                 </div>
                 <div class="input-group mt-1">
                     <span class="input-group-text">Country</span>
-                    <input type="text" aria-label="Country" class="form-control">
+                    <input type="text" aria-label="Country" data-id="Country" class="form-control">
                 </div>
                 <div class="input-group mt-1">
                     <span class="input-group-text">Phone</span>
-                    <input type="text" aria-label="Phone" class="form-control">
+                    <input type="text" aria-label="Phone" data-id="Phone" class="form-control">
                 </div>
                 <div class="input-group mt-1">
                     <span class="input-group-text">Fax</span>
-                    <input type="text" aria-label="Fax" class="form-control">
+                    <input type="text" aria-label="Fax" data-id="Fax" class="form-control">
                 </div>
             </div>
             <div class="modal-footer">
@@ -154,7 +154,6 @@
             $("#get-data").click(function () {
                 getData();
             });
-            $("#add-data").click(addData);
             $("#custom-data-body").click(function (e) {
                 const classList = e.target.classList;
                 const dataId = e.target.dataset.id;
@@ -172,7 +171,8 @@
 
             // 綁定新增
             $(".btn-submit-add").click(function () {
-                alert("add submit");
+                const data = getAddDataValue();
+                addData(data);
             });
 
         });
@@ -208,7 +208,7 @@
             });
         }
 
-        // 新增資料
+        // 新增單筆資料修改
         function getEdit(dataId) {
             $.ajax({
                 url: `/api/customer/${dataId}`,
@@ -219,6 +219,57 @@
                 },
                 error: function (err) {
                     console.log(err);
+                }
+            });
+        }
+
+        // 取得新增視窗的值
+        function getAddDataValue() {
+            return data = {
+                customerID: $(`#addModal [data-id="CustomerID"]`).val(),
+                companyName: $(`#addModal [data-id="Company Name"]`).val(),
+                contactName:  $(`#addModal [data-id="Contact Name"]`).val(),
+                contactTitle:  $(`#addModal [data-id="Contact Title"]`).val(),
+                address:  $(`#addModal [data-id="Address"]`).val(),
+                city:  $(`#addModal [data-id="City"]`).val(),
+                region:  $(`#addModal [data-id="Region"]`).val(),
+                postalCode:  $(`#addModal [data-id="Postal Code"]`).val(),
+                country: $(`#addModal [data-id="Country"]`).val(),
+                phone: $(`#addModal [data-id="Phone"]`).val(),
+                fax: $(`#addModal [data-id="Fax"]`).val()
+            };
+        }
+        // 完成後清空AddDataValue
+        function clearAddModalValue() {
+            $(`#addModal [data-id="CustomerID"]`).val("");
+            $(`#addModal [data-id="Company Name"]`).val("");
+            $(`#addModal [data-id="Contact Name"]`).val("");
+            $(`#addModal [data-id="Contact Title"]`).val("");
+            $(`#addModal [data-id="Address"]`).val("");
+            $(`#addModal [data-id="City"]`).val("");
+            $(`#addModal [data-id="Region"]`).val("");
+            $(`#addModal [data-id="Postal Code"]`).val("");
+            $(`#addModal [data-id="Country"]`).val("");
+            $(`#addModal [data-id="Phone"]`).val("");
+            $(`#addModal [data-id="Fax"]`).val("");
+        }
+
+        // 新增資料
+        function addData(data) {
+            console.log(data)
+            $.ajax({
+                url: `/api/customer`,
+                method: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                dataType: "json",
+                success: function (res) {
+                    getData();
+                    clearAddModalValue();
+                },
+                error: function (err) {
+                    console.log(err)
+                    clearAddModalValue();
                 }
             });
         }
@@ -258,10 +309,6 @@
             }
         }
 
-        // 建立新的資料
-        function addData() {
-            
-        }
 
         // 建立詳細表格
         function renderDetailModal(data) {

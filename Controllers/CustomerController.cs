@@ -75,7 +75,7 @@ namespace WebMvcNorthWind.Controllers
                 var addItemID = p_oAdd.CustomerID;
                 // 確認有無重複
                 var queryItem = _Dal.GetCustomerByID(addItemID);
-                if (queryItem != null)
+                if (queryItem.Result == null)
                 {
                     var result = await _Dal.AddCustomer(p_oAdd);
                     return CreatedAtAction(nameof(GetCustomerByID), new { p_sQryId = p_oAdd.CustomerID }, p_oAdd);
