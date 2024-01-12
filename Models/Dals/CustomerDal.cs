@@ -87,7 +87,7 @@ namespace WebMvcNorthWind.Models.Dals
         /// <exception cref="Exception"></exception>
         public async Task<int> AddCustomer(CustomerModel p_oAdd)
         {
-            _Logger.LogInformation("CcustomerDal AddCustomer start");
+            _Logger.LogInformation("CustomerDal AddCustomer start");
             StringBuilder sbSql = new StringBuilder();
             DynamicParameters p = new DynamicParameters();
             try

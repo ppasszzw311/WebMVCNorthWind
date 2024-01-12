@@ -84,7 +84,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary btn-submit-add">確認新增</button>
+                <button type="button" class="btn btn-primary btn-submit-add" data-bs-dismiss="modal">確認新增</button>
             </div>
         </div>
     </div>
@@ -95,7 +95,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">顧客詳細</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel" data-bs-dismiss="modal">顧客詳細</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="customer-detail">
@@ -121,7 +121,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-success">儲存修改</button>
+                <button type="button" class="btn btn-success btn-submit-edit" data-bs-dismiss="modal">儲存修改</button>
             </div>
         </div>
     </div>
@@ -135,12 +135,12 @@
                 <h1 class="modal-title fs-5" id="exampleModalLabel">刪除顧客</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="customer-delete">
                 <h5>請確認是否刪除本顧客</h5>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-danger">確認刪除</button>
+                <button type="button" class="btn btn-danger btn-submit-delete"  data-bs-dismiss="modal">確認刪除</button>
             </div>
         </div>
     </div>
@@ -174,6 +174,17 @@
                 const data = getAddDataValue();
                 addData(data);
             });
+
+            // 綁定修改
+            $(".btn-submit-edit").click(function () {
+                const data = getEditDataValue();
+                editData(data);
+            })
+            // 綁定刪除
+            $(".btn-submit-delete").click(function () {
+                const dataId = $("#customer-delete h5").data("id");
+                deleteData(dataId)
+            })
 
         });
 
@@ -253,6 +264,22 @@
             $(`#addModal [data-id="Phone"]`).val("");
             $(`#addModal [data-id="Fax"]`).val("");
         }
+        // 取得修改視窗的值
+                function getEditDataValue() {
+            return data = {
+                customerID: $(`#editModal [data-id="CustomerID"]`).text(),
+                companyName: $(`#editModal [data-id="Company Name"]`).val(),
+                contactName:  $(`#editModal [data-id="Contact Name"]`).val(),
+                contactTitle:  $(`#editModal [data-id="Contact Title"]`).val(),
+                address:  $(`#editModal [data-id="Address"]`).val(),
+                city:  $(`#editModal [data-id="City"]`).val(),
+                region:  $(`#editModal [data-id="Region"]`).val(),
+                postalCode:  $(`#editModal [data-id="Postal Code"]`).val(),
+                country: $(`#editModal [data-id="Country"]`).val(),
+                phone: $(`#editModal [data-id="Phone"]`).val(),
+                fax: $(`#editModal [data-id="Fax"]`).val()
+            };
+        }
 
         // 新增資料
         function addData(data) {
@@ -275,6 +302,38 @@
         }
 
         // 修改資料
+        function editData(data) {
+            $.ajax({
+                url: `/api/customer/${data.customerID}`,
+                method: "PUT",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                dataType: "json",
+                success: function (res) {
+                    console.log(res);
+                    getData();
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        }
+
+        // 刪除資料
+        function deleteData(data) {
+            $.ajax({
+                url: `/api/customer/${data}`,
+                method: "DELETE",
+                contentType: "application/json",
+                dataType: "json",
+                success: function (res) {
+                    getData();
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+        }
 
         // 畫表格
         function RenderTable(data) {
@@ -361,53 +420,59 @@
 
         }
 
+
         // 建立修改視窗
         function renderEditModal(data) {
             $("#customer-edit").html(`<div class="input-group mt-1">
                             <span class="text">CustomerID: </span>
-                            <p class="mx-1">${filterNullValue(data.customerID)}</p>
+                            <p class="mx-1" data-id="CustomerID">${filterNullValue(data.customerID)}</p>
                         </div>
                         <div class="input-group mt-1">
                             <span class="text">Company Name: </span>
-                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.companyName)}" class="form-control">
+                            <input type="text" aria-label="Company Name" data-id="Company Name" value="${filterNullValue(data.companyName)}" class="form-control">
                         </div>
                         <div class="input-group mt-1">
                             <span class="text">Contact Name: </span>
-                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.contactName)}" class="form-control">
+                            <input type="text" aria-label="Contact Name" data-id="Contact Name" value="${filterNullValue(data.contactName)}" class="form-control">
                         </div>
                         <div class="input-group mt-1">
                             <span class="text">Contact Title: </span>
-                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.contactTitle)}" class="form-control">
+                            <input type="text" aria-label="Contact Title" data-id="Contact Title" value="${filterNullValue(data.contactTitle)}" class="form-control">
                         </div>
                         <div class="input-group mt-1">
                             <span class="text">Address: </span>
-                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.address)}" class="form-control">
+                            <input type="text" aria-label="Address" data-id="Address" value="${filterNullValue(data.address)}" class="form-control">
                         </div>
                         <div class="input-group mt-1">
                             <span class="text">City: </span>
-                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.city)}" class="form-control">
+                            <input type="text" aria-label="City" data-id="City" value="${filterNullValue(data.city)}" class="form-control">
                         </div>
                         <div class="input-group mt-1">
                             <span class="text">Region: </span>
-                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.region)}" class="form-control">
+                            <input type="text" aria-label="Region" data-id="Region" value="${filterNullValue(data.region)}" class="form-control">
                         </div>
                         <div class="input-group mt-1">
                             <span class="text">Postal Code: </span>
-                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.postalCode)}" class="form-control">
+                            <input type="text" aria-label="Postal Code" data-id="Postal Code" value="${filterNullValue(data.postalCode)}" class="form-control">
                         </div>
                         <div class="input-group mt-1">
                             <span class="text">Country: </span>
-                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.country)}" class="form-control">
+                            <input type="text" aria-label="Country" data-id="Country" value="${filterNullValue(data.country)}" class="form-control">
                         </div>
                         <div class="input-group mt-1">
                             <span class="text">Phone: </span>
-                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.phone)}" class="form-control">
+                            <input type="text" aria-label="Phone" data-id="Phone" value="${filterNullValue(data.phone)}" class="form-control">
                         </div>
                         <div class="input-group mt-1">
                             <span class="text">Fax: </span>
-                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.fax)}" class="form-control">
+                            <input type="text" aria-label="Fax" data-id="Fax" value="${filterNullValue(data.fax)}" class="form-control">
                         </div>`)
-        } 
+        }
+        // 建立刪除視窗
+        function renderDeleteModal(data) {
+            $("#customer-delete").html(`<h5 data-id="${data}">請確認是否刪除 ${data} 顧客</h5>`)
+        }
+
         // 去除Null值
         function filterNullValue(inputString) {
             if (inputString === "null") {
