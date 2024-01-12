@@ -14,10 +14,12 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th scope="col">操作</th>
                 <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
+                <th scope="col">Customer ID</th>
+                <th scope="col">Company Name</th>
+                <th scope="col">Contact Name</th>
+                <th scope="col">Contract Title</th>
             </tr>
         </thead>
         <tbody id="custom-data-body">
@@ -35,14 +37,54 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="input-group">
-                    <span class="input-group-text">First and last name</span>
-                    <input type="text" aria-label="First name" class="form-control">
+                <div class="input-group mt-1">
+                    <span class="input-group-text">CustomerID</span>
+                    <input type="text" aria-label="CustomerID" class="form-control">
+                </div>
+                <div class="input-group mt-1">
+                    <span class="input-group-text">Company Name</span>
+                    <input type="text" aria-label="Company Name" class="form-control">
+                </div>
+                <div class="input-group mt-1">
+                    <span class="input-group-text">Contact Name</span>
+                    <input type="text" aria-label="Contact Name" class="form-control">
+                </div>
+                <div class="input-group mt-1">
+                    <span class="input-group-text">Contact Title</span>
+                    <input type="text" aria-label="Contact Title" class="form-control">
+                </div>
+                <div class="input-group mt-1">
+                    <span class="input-group-text">Address</span>
+                    <input type="text" aria-label="Address" class="form-control">
+                </div>
+                <div class="input-group mt-1">
+                    <span class="input-group-text">City</span>
+                    <input type="text" aria-label="City" class="form-control">
+                </div>
+                <div class="input-group mt-1">
+                    <span class="input-group-text">Region</span>
+                    <input type="text" aria-label="Region" class="form-control">
+                </div>
+                <div class="input-group mt-1">
+                    <span class="input-group-text">Postal Code</span>
+                    <input type="text" aria-label="Postal Code" class="form-control">
+                </div>
+                <div class="input-group mt-1">
+                    <span class="input-group-text">Country</span>
+                    <input type="text" aria-label="Country" class="form-control">
+                </div>
+                <div class="input-group mt-1">
+                    <span class="input-group-text">Phone</span>
+                    <input type="text" aria-label="Phone" class="form-control">
+                </div>
+                <div class="input-group mt-1">
+                    <span class="input-group-text">Fax</span>
+                    <input type="text" aria-label="Fax" class="form-control">
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary btn-submit-add">確認新增</button>
             </div>
         </div>
     </div>
@@ -56,12 +98,11 @@
                 <h1 class="modal-title fs-5" id="exampleModalLabel">顧客詳細</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="customer-detail">
                 ...
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
             </div>
         </div>
     </div>
@@ -75,12 +116,12 @@
                 <h1 class="modal-title fs-5" id="exampleModalLabel">修改顧客</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="customer-edit">
                 ...
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-success">儲存修改</button>
             </div>
         </div>
     </div>
@@ -95,11 +136,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ...
+                <h5>請確認是否刪除本顧客</h5>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger">確認刪除</button>
             </div>
         </div>
     </div>
@@ -116,11 +157,23 @@
             $("#add-data").click(addData);
             $("#custom-data-body").click(function (e) {
                 const classList = e.target.classList;
-                console.log(classList.contains("information"));
-                console.log(classList.contains("edit"));
-                console.log(classList.contains("delete"));
-                console.log(e.target.dataset.id);
+                const dataId = e.target.dataset.id;
+                if (classList.contains("information")) {
+                    // 查看詳細
+                    getDetail(dataId);
+                } else if (classList.contains("edit")) {
+                    // 修改
+                    getEdit(dataId);
+                } else if (classList.contains("delete")) {
+                    // 刪除
+                    renderDeleteModal(dataId);
+                }
             })
+
+            // 綁定新增
+            $(".btn-submit-add").click(function () {
+                alert("add submit");
+            });
 
         });
 
@@ -140,8 +193,35 @@
         }
 
         // 取得單筆資料詳細
+        function getDetail(dataId) {
+            $.ajax({
+                url: `/api/customer/${dataId}`,
+                method: "GET",
+                dataType: "json",
+                success: function (res) {
+                    console.log(res)
+                    renderDetailModal(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
 
         // 新增資料
+        function getEdit(dataId) {
+            $.ajax({
+                url: `/api/customer/${dataId}`,
+                method: "GET",
+                dataType: "json",
+                success: function (res) {
+                    renderEditModal(res)
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
 
         // 修改資料
 
@@ -169,7 +249,7 @@
                                 <td>${item.customerID}</td>
                                 <td>${item.companyName}</td>
                                 <td>${item.contactName}</td>
-                                
+                                        <td>${item.contactTitle}</td>
                             </tr>`
                 }
                 $("#custom-data-body").html(tableBodyItem);
@@ -181,6 +261,113 @@
         // 建立新的資料
         function addData() {
             
+        }
+
+        // 建立詳細表格
+        function renderDetailModal(data) {
+            $("#customer-detail").html(`
+                    <div class="input-group mt-1">
+                            <span class="text">CustomerID: </span>
+                            <p class="mx-1">${filterNullValue(data.customerID)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Company Name: </span>
+                            <p class="mx-1">${filterNullValue(data.companyName)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Contact Name: </span>
+                            <p class="mx-1">${filterNullValue(data.contactName)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Contact Title: </span>
+                            <p class="mx-1">${filterNullValue(data.contactTitle)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Address: </span>
+                            <p class="mx-1">${filterNullValue(data.address)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">City: </span>
+                            <p class="mx-1">${filterNullValue(data.city)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Region: </span>
+                            <p class="mx-1">${filterNullValue(data.region)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Postal Code: </span>
+                            <p class="mx-1">${filterNullValue(data.postalCode)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Country: </span>
+                            <p class="mx-1">${filterNullValue(data.country)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Phone: </span>
+                            <p class="mx-1">${filterNullValue(data.phone)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Fax: </span>
+                            <p class="mx-1">${filterNullValue(data.fax)}</p>
+                        </div>
+            `);
+
+        }
+
+        // 建立修改視窗
+        function renderEditModal(data) {
+            $("#customer-edit").html(`<div class="input-group mt-1">
+                            <span class="text">CustomerID: </span>
+                            <p class="mx-1">${filterNullValue(data.customerID)}</p>
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Company Name: </span>
+                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.companyName)}" class="form-control">
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Contact Name: </span>
+                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.contactName)}" class="form-control">
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Contact Title: </span>
+                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.contactTitle)}" class="form-control">
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Address: </span>
+                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.address)}" class="form-control">
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">City: </span>
+                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.city)}" class="form-control">
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Region: </span>
+                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.region)}" class="form-control">
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Postal Code: </span>
+                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.postalCode)}" class="form-control">
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Country: </span>
+                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.country)}" class="form-control">
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Phone: </span>
+                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.phone)}" class="form-control">
+                        </div>
+                        <div class="input-group mt-1">
+                            <span class="text">Fax: </span>
+                            <input type="text" aria-label="Contact Name" value="${filterNullValue(data.fax)}" class="form-control">
+                        </div>`)
+        } 
+        // 去除Null值
+        function filterNullValue(inputString) {
+            if (inputString === "null") {
+                return "";
+            } else {
+                return inputString;
+            }
         }
 
         function handleClick() {
